@@ -15,3 +15,4 @@ function handleTagClick(mx, my) {
   }
 
   // tag.checkClick() or checkMous() --> handle the detechtion for specific game 
+}
