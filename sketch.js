@@ -1,72 +1,5 @@
-let mapImg;
-let iconsImg;
-let mapX = 0;
-let mapY = 0;
-let mapWidth;
-let mapHeight;
-
-
-
-
-
-let clickRadius = 20;
-let clickAudio;
-
-
-let images = {};
-
-// x coordinate with respect to the map image
-let mapclickables = [
-  ["viewpoint1", 0.30, 0.15],
-  ["viewpoint2", 0.49, 0.53],
-  ["viewpoint3", 0.42, 0.32],
-  ["viewpoint4", 0.55, 0.30],
-  ["viewpoint5", 0.7, 0.5],
-  ["viewpoint6", 0.73, 0.56],
-  ["viewpoint7", 0.66, 0.62],
-  ["viewpoint8", 0.87, 0.66],
-  ["viewpoint9", 0.85, 0.79],
-  ["viewpoint10", 0.70, 0.85],
-  ["viewpoint11", 0.68, 0.75],
-  ["viewpoint12", 0.38, 0.75],
-  ["viewpoint13", 0.12, 0.30],
-  ["viewpoint14", 0.14, 0.64],
-  ["viewpoint15", 0.20, 0.66],
-  ["viewpoint16", 0.17, 0.92],
-
-  // ["ringbell1", 0.40, 0.17],
-  // ["ringbell2", 0.75, 0.135],
-  // ["ringbell3", 0.2, 0.4],
-  // ["ringbell4", 0.76, 0.44],
-  // ["ringbell5", 0.44, 0.76],
-
-  // ["duck", 0.56, 0.65],
-  // ["bike", 0.33, 0.36],
-  // ["tag",  0.74, 0.81]
-];
-
-
+let activeFriends = []; // array of friend IDs
 let tabs = []
-
-// preload resources for main 
-function preload() {
-
-  mapImg = loadImage("images/main.jpg");
-  iconGamesImg = loadImage("images/icon_games.png");
-  iconRingbellsImg = loadImage("images/icon_ringbells.png");
-  iconViewpointsImg = loadImage("images/icon_viewpoints.png");
-  iconViewpointsMockImg = loadImage("images/icon_viewpointsmock.PNG");
-
-  // Load VIEWPOINT images
-  for (let item of mapclickables) {
-    let id = item[0];
-
-    if (id.startsWith("viewpoint")) {
-      images[id] = loadImage(`images/${id}.png`);
-    }
-  }
-
-}
 
 // set up canva
 function setup() {
@@ -74,15 +7,20 @@ function setup() {
   mapWidth = height * 3 / 4;
   mapHeight = height;
   setUpTabs(mapWidth);
+  setUpFriends();
+  
+  noSmooth();        // super crisp pixel font
+  textFont(pixelFont);
+  textSize(16);      // 04b03 looks good around 12–20 px
 
 }
-
 
 // main controller for visual output
 function draw() {
   drawMap();
   drawTabs();
   test_draw_clickables();
+  drawActiveFriendsBar()
   
   
 }
@@ -104,22 +42,33 @@ function drawTabs() {
       tab.draw();
       console.log(tab.id)
   }
+
+  if (toomanyviewtabs) {
+    drawText("Too many view tabs open!")
+  }
 }
 
 
 // main controller for mouse and key detechtion
 function mousePressed() {
 
-  // try to click-close a tab first
   for (let i = openTabs.length - 1; i >= 0; i--) {
     const tab = openTabs[i];
-    // console.log("checking to close")
+
+    // removing taps 
     if (tab.wasCloseClicked(mouseX, mouseY)) {
       // console.log("removing tab")
       openTabs.splice(i, 1);  // remove that tab
       drawMap();
+      toomanyviewtabs = false;
       return;
     }
+    
+    if (tab.type === "ringbell") {
+      tab.handleClick(mouseX, mouseY);
+      // if you want tabs to "eat" the click, you can `return;` here
+    }
+
   }
   
   // open a new tab 
@@ -136,12 +85,12 @@ function clickable() {
   let click = findClickablesUnderMouse();
 
   if (click.startsWith("viewpoint")) {
-    openViewpoint(click, images[click]);
+    openViewpoint(viewpoints_images[click]);
     return;
   }
 
   if (click.startsWith("ringbell")) {
-    openRingbell(click, images[click]);
+    openRingbell(click, ringbell);
     return;
   }
 
@@ -190,3 +139,61 @@ function test_draw_clickables(){
 
 
 
+
+
+
+function getFriendById(friendId) {
+  for (let key in FRIENDS) {
+    const f = FRIENDS[key];
+    if (f.id === friendId) return f;
+  }
+  return null;
+}
+
+function drawActiveFriendsBar() {
+  if (!activeFriends || activeFriends.length === 0) return;
+
+  const margin = 12;
+  const barHeight = 52;
+  const iconSize = 26;
+
+  // label depends on count
+  const label =
+    activeFriends.length === 1 ? "Active Friend:" : "Active Friends:";
+
+  textFont(pixelFont);
+  textSize(10);
+  textAlign(LEFT, TOP);
+
+  const labelWidth = textWidth(label);
+  const barWidth = labelWidth + 16 + activeFriends.length * (iconSize + 6);
+
+  const x = width - barWidth - margin;
+  const y = height - barHeight - margin;
+
+  // --- background panel ---
+  noStroke();
+  fill(0, 0, 0, 200);
+  rect(x, y, barWidth, barHeight, 4);
+
+  // --- label text ---
+  fill(255);
+  const labelX = x + 8;
+  const labelY = y + 6;
+  text(label, labelX, labelY);
+
+  // --- friend icons ---
+  let iconX = labelX + labelWidth + 8;
+  const iconY = y + 18;
+
+  for (let friendId of activeFriends) {
+    const friend = getFriendById(friendId);
+    if (!friend) continue;
+
+    const img = friend.profileImg;
+    if (!img) continue;
+
+    image(img, iconX, iconY, iconSize, iconSize);
+    iconX += iconSize + 6;
+  }
+}

@@ -11,6 +11,9 @@ const PADDING = 6;          // padding inside content area
 const DOT_R = 8;
 const DOT_PADDING_X = 10;
 
+
+let toomanyviewtabs = false;
+
 class BaseTab {
   constructor(x, y, w, h) {
     this.x = x;
@@ -82,7 +85,14 @@ class BaseTab {
       h: innerH - TITLE_BAR_HEIGHT - PADDING * 2
     };
   }
-  
+  getTitleBarRect() {
+    return {
+      x: this.x + BORDER / 2,
+      y: this.y + BORDER / 2,
+      w: this.w - BORDER,
+      h: TITLE_BAR_HEIGHT
+    };
+  }
   // check if close tab
   wasCloseClicked(mx, my) {
     return mx > this.closeBtn.x &&
@@ -119,11 +129,172 @@ class ViewpointTab extends BaseTab {
 }
 
 
+class RingbellTab extends BaseTab {
+  constructor(x, y, friend) {
+    // you can choose a fixed window size that fits your UI
+    const w = 250;
+    const h = 250 * ringbellBaseImg.height / ringbellBaseImg.width;
+    super(x, y, w, h);
+    
+    this.type = "ringbell";
+    this.friend = friend;
+
+    this.state = "idle";
+    this.text = friend.lines.idle;
+
+    const aspect = this.friend.profileImg.width/this.friend.profileImg.height;
+
+    // define areas relative to tab
+    this.buttonArea = { x: this.x + 125, y: this.y + 130, w: 100, h: 90}; // "Press to ring"
+    this.profileArea = { x: this.x + 125, y: this.y + TITLE_BAR_HEIGHT, w: 80, h: 80 * aspect};  // top-right text/face
+  }
+
+  draw() {
+    this.drawFrame();
+
+    // base picture of the doorbell
+    image(ringbellBaseImg, this.x, this.y + TITLE_BAR_HEIGHT, this.w, this.h);
+
+    
+    // friend portrait in the top-right block
+    image(this.friend.profileImg,
+            this.profileArea.x, this.profileArea.y + TITLE_BAR_HEIGHT,
+            this.profileArea.w, this.profileArea.h);
+
+    // overlay text on titlebar
+    const bar = this.getTitleBarRect();
+
+    fill(255);          // white text pops better on gray
+    textFont(pixelFont);
+    textSize(10);
+    textAlign(LEFT, CENTER);   // or CENTER if you prefer centered
+    noStroke();
+
+    text(
+      this.text,
+      bar.x + 30,          // small padding from left
+      bar.y + bar.h / 2   // vertically centered
+    );
 
 
-function drawText(string) {
-  
+    // bottom-right Press to ring block
+    // fill(0);
+    // rect(this.buttonArea.x, this.buttonArea.y,
+    //      this.buttonArea.w, this.buttonArea.h);
+
+    fill(255);
+    textSize(12);
+    textAlign(CENTER, CENTER); 
+    text("Press to Ring",
+         this.buttonArea.x + this.buttonArea.w / 2,
+         this.buttonArea.y + this.buttonArea.h / 2);
+  }
+
+  handleClick(mx, my) {
+    // clicked on "Press to ring" region?
+    if (mx >= this.buttonArea.x && mx <= this.buttonArea.x + this.buttonArea.w &&
+        my >= this.buttonArea.y && my <= this.buttonArea.y + this.buttonArea.h) {
+      this.onRing();
+    }
+  }
+
+  onRing() {
+    if (this.state !== "idle") return;
+
+    this.state = "ringing";
+    this.text = this.friend.lines.ringing;
+
+    // after a short delay, friend responds + joins activeFriends
+    setTimeout(() => {
+      this.state = "responded";
+      this.text = this.friend.lines.response;
+      addActiveFriend(this.friend.id);
+    }, 1200);
+  }
 }
+
+
+// class RingbellTab extends BaseTab {
+//   constructor(x, y, img) {
+//     super({x, y, w: img.width, h: img.height}, "ringbell", friend);
+    
+//     this.img = img;
+//     // this.friend = friend;
+
+//     this.state = "idle"; 
+//     this.text = `Home of ${friend.name}`;
+
+//     // Click areas relative to tab position  
+//     this.displayArea = { 
+//       x: this.x + 240, 
+//       y: this.y + 40, 
+//       w: 220, 
+//       h: 80 
+//     };
+
+//     this.buttonArea = {
+//       x: this.x + 240, 
+//       y: this.y + 180, 
+//       w: 220, 
+//       h: 100
+//     };
+//   }
+
+//   draw() {
+//     this.drawFrame();
+
+//     // draw the main ringbell PNG
+//     image(this.img, this.x, this.y);
+
+//     // draw dynamic text on upper right screen
+//     fill(255);
+//     textSize(14);
+//     textAlign(CENTER, CENTER);
+//     text(this.text,
+//          this.displayArea.x + this.displayArea.w/2,
+//          this.displayArea.y + this.displayArea.h/2,
+//          this.displayArea.w,
+//          this.displayArea.h);
+
+//     // draw the button highlight
+//     fill(255, 255, 255, 40);
+//     rect(this.buttonArea.x, this.buttonArea.y, 
+//          this.buttonArea.w, this.buttonArea.h);
+    
+//     fill(255);
+//     textSize(16);
+//     text("Press to Ring",
+//          this.buttonArea.x + this.buttonArea.w/2,
+//          this.buttonArea.y + this.buttonArea.h/2);
+//   }
+
+//   handleClick(mx, my) {
+//     // If click inside the "press to ring" area
+//     if (mx > this.buttonArea.x && mx < this.buttonArea.x + this.buttonArea.w &&
+//         my > this.buttonArea.y && my < this.buttonArea.y + this.buttonArea.h) {
+      
+//       this.startRinging();
+//     }
+//   }
+
+//   startRinging() {
+//     if (this.state !== "idle") return;
+//     this.state = "ringing";
+//     this.text = "Ringing...";
+
+//     // After delay, friend responds
+//     setTimeout(() => {
+//       this.respond();
+//     }, 1500);
+//   }
+
+//   respond() {
+//     this.state = "responding";
+//     this.text = this.friend.response;
+//   }
+// }
+
+
 // class RingbellTab extends BaseTab {
 //   constructor(slot, id) {
 //     super(slot, "ringbell", id);
@@ -197,21 +368,16 @@ function drawText(string) {
 
 
 
-function openGame(id) {
-  // close old game
-  openTabs = openTabs.filter(t => t.type !== "game");
-  openTabs.push(new GameTab(GAME_SLOT, id));
-}
+// function openGame(id) {
+//   // close old game
+//   openTabs = openTabs.filter(t => t.type !== "game");
+//   openTabs.push(new GameTab(GAME_SLOT, id));
+// }
 
-function openRingbell(id) {
-  // close old ringbell
-  openTabs = openTabs.filter(t => t.type !== "ringbell");
-  openTabs.push(new RingbellTab(RINGBELL_SLOT, id));
-}
 
-function closeTab(tab) {
-  openTabs = openTabs.filter(t => t !== tab);
-}
+// function closeTab(tab) {
+//   openTabs = openTabs.filter(t => t !== tab);
+// }
 
 
 // // integrate with the other mousePressedLogic
