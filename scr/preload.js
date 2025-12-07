@@ -37,7 +37,7 @@ let mapclickables = [
 
   // ["duck", 0.56, 0.65],
   // ["bike", 0.33, 0.36],
-  // ["tag",  0.74, 0.81]
+  ["tag",  0.74, 0.81]
 ];
 
 
@@ -49,7 +49,15 @@ const FRIEND_IMAGE_IDS = [
   "friendE_RB", "friendE_tag"
 ];
 
+// let GAME_SLOT     = { x: 420, y: 20,  w: 360, h: 260 };
+let RINGBELL_SLOT = { x: 10, y: 20};
 
+let BASE_VIEWPOINT_SLOTS = [
+  { id: "slot0", x: 10, y: 5 },
+  { id: "slot1", x: 5, y: 150 },
+  { id: "slot2", x: 15, y: 100 },
+  { id: "slot3", x: 0, y: 50 },
+];
 
 // preload resources for main 
 function preload() {
@@ -60,7 +68,8 @@ function preload() {
   iconViewpointsImg = loadImage("images/icon_viewpoints.png");
   iconViewpointsMockImg = loadImage("images/icon_viewpointsmock.PNG");
   ringbellBaseImg = loadImage("images/backdropRingbell.png");
-  
+  selfImg = loadImage("images/self.PNG");
+  tagImg = loadImage("images/backdropTag.JPG");
 
   // Load viewpoints images
   for (let item of mapclickables) {
@@ -78,7 +87,7 @@ function preload() {
   // Load friends images
   for (let id of FRIEND_IMAGE_IDS) {
     friends_images[id] = loadImage(`images/${id}.PNG`);
-    console.log("loaded")
+    console.log("loaded...")
   }
 
   console.log("loaded all", friends_images)

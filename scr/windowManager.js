@@ -1,19 +1,3 @@
-
-let openTabs = [];
-
-// let GAME_SLOT     = { x: 420, y: 20,  w: 360, h: 260 };
-let RINGBELL_SLOT = { x: 10, y: 20};
-
-// Base relative positions
-let BASE_VIEWPOINT_SLOTS = [
-  { id: "slot0", x: 10, y: 5 },
-  { id: "slot1", x: 5, y: 150 },
-  { id: "slot2", x: 15, y: 100 },
-  { id: "slot3", x: 0, y: 50 },
-];
-
-
-
 function setUpTabs(mapWidth) {
   VIEWPOINT_SLOTS = BASE_VIEWPOINT_SLOTS.map(base => {
     return {
@@ -25,7 +9,6 @@ function setUpTabs(mapWidth) {
     RINGBELL_SLOT = { x: 10 + mapWidth, y: 20};
 }
 
-
 function setUpFriends() {
     FRIENDS = {
     ringbell1: {
@@ -36,7 +19,7 @@ function setUpFriends() {
         lines: {
         idle: "Home of Friend A",
         ringing: "Ringing...",
-        response: "We’re playing tag! Coming down!"
+        response: "We are playing tag! Coming down!"
         }
     },
     ringbell2: {
@@ -84,13 +67,8 @@ function setUpFriends() {
     }
   },
 };
-
-
-  console.log("FRIENDS after setup:", FRIENDS);
+//   console.log("FRIENDS after setup:", FRIENDS);
 }
-
-
-
 
 
 
@@ -121,20 +99,21 @@ function openViewpoint(img) {
 //   console.log("too many")
 }
 
+
 function openRingbell(id) {
-  // 1. Get the friend associated with this ringbell
+  // Get the friend associated with this ringbell
   const friend = FRIENDS[id];
-  console.log(friends_images)
-  console.log("ringing ", friend)
+//   console.log("openRingbell ", friend);
+//   console.log(friends_images)
+//   console.log("ringing ", friend)
   if (!friend) {
     console.error("No friend data for:", id);
     return;
   }
 
-  // 2. Ensure only one ringbell tab exists at a time
+  // Ensure only one ringbell tab exists at a time
   openTabs = openTabs.filter(t => t.type !== "ringbell");
 
-  // 3. Create a new ringbell tab
   openTabs.push(
     new RingbellTab(
       RINGBELL_SLOT.x,
@@ -146,21 +125,23 @@ function openRingbell(id) {
 
 
 
-function drawText(msg) {
-  textFont(pixelFont);
-  textSize(14);
-
-  fill(0);
-  textAlign(RIGHT, TOP);
-
-  const margin = 20;
-  text(msg, width - margin, margin);
-}
-
 function addActiveFriend(friendId) {
   if (!activeFriends.includes(friendId)) {
     activeFriends.push(friendId);
   }
+}
+
+function openTagGame() {
+  // Only one tag game tab at a time
+  console.log()
+  openTabs = openTabs.filter(t => t.type !== "game_tag");
+
+  const slotX = mapWidth + 10; // where you want game tab
+  const slotY = 60;
+  const w = 360;
+  const h = 360 * tagImg.width/tagImg.height;
+
+  openTabs.push(new TagGameTab(slotX, slotY, w, h, activeFriends));
 }
 
 

@@ -123,6 +123,7 @@ class ViewpointTab extends BaseTab {
 
   draw() {
     this.drawFrame();
+    console.log("content", content);
     const content = this.getContentRect();
     image(this.img, content.x, content.y, this.imgW, this.imgH);
   }
@@ -138,6 +139,7 @@ class RingbellTab extends BaseTab {
     
     this.type = "ringbell";
     this.friend = friend;
+    
 
     this.state = "idle";
     this.text = friend.lines.idle;
@@ -149,6 +151,7 @@ class RingbellTab extends BaseTab {
     this.profileArea = { x: this.x + 125, y: this.y + TITLE_BAR_HEIGHT, w: 80, h: 80 * aspect};  // top-right text/face
   }
 
+  
   draw() {
     this.drawFrame();
 
@@ -210,6 +213,154 @@ class RingbellTab extends BaseTab {
       this.text = this.friend.lines.response;
       addActiveFriend(this.friend.id);
     }, 1200);
+  }
+}
+
+
+
+
+class TagGameTab extends BaseTab {
+  constructor(x, y, windowW, windowH, activeFriendIds) {
+    super(x, y, windowW, windowH);
+    this.type = "game_tag";
+
+    // frame
+    const content = this.getContentRect();
+    this.contentX = content.x;
+    this.contentY = content.y;
+    this.gameW = content.w;
+    this.gameH = content.w * tagImg.width/tagImg.height;// content.h;
+
+    this.tagCooldown = 400; // ms
+
+    //create player & AI friends in local game coords
+    this.player = new Player(
+      this.gameW / 2,
+      this.gameH / 2,
+      15,
+      3,
+      this.gameW,
+      this.gameH,
+      selfImg
+    );
+
+    this.friends = [];
+
+    // for (let friendId of activeFriendIds) {
+    //   const spriteImg = getTagSpriteFor(friendId);
+    //   console.log(spriteImg);
+
+    //   const spawnX = random(40, this.gameW - 40);
+    //   const spawnY = random(40, this.gameH - 40);
+
+    //   this.friends.push(
+    //     new TagFriend(
+    //       spawnX,
+    //       spawnY,
+    //       14,
+    //       2.3,
+    //       this.gameW,
+    //       this.gameH,
+    //       friendId,
+    //       spriteImg
+    //     )
+    //   );
+    for (let friendId of activeFriends) {
+      const friendData = getFriendById(friendId);
+      if (!friendData) {
+        console.warn("No FRIENDS entry for", friendId);
+        continue;
+      }
+
+      const spriteImg = friendData.tagSprite;
+      const spawnX = random(40, this.gameW - 40);
+      const spawnY = random(40, this.gameH - 40);
+
+      this.friends.push(
+        new TagFriend(
+          spawnX,
+          spawnY,
+          14,
+          2.3,
+          this.gameW,
+          this.gameH,
+          friendId,
+          spriteImg
+        )
+      );
+    }
+
+    
+  }
+
+  draw() {
+    this.drawFrame();  // outer frame + title bar + white content
+
+    const content = this.getContentRect();
+
+    push();
+    translate(content.x, content.y);
+
+    // BACKGROUND FIRST
+    if (tagImg) {
+      image(tagImg, 0, 0, this.gameW, this.gameH);
+    } else {
+      console.log("tagImg missing in draw:", tagBgImg);
+      fill(240);
+      rect(0, 0, this.gameW, this.gameH);
+    }
+
+    // update + draw player
+    this.player.update();
+    this.player.display();
+
+    // update + draw AI friends
+    for (let f of this.friends) {
+      f.update(this.player);
+      f.display();
+    }
+
+    // check tag logic
+    this.checkTag();
+
+    pop();
+  }
+
+  
+
+  checkTag() {
+    for (let f of this.friends) {
+      const distance = p5.Vector.dist(f.pos, this.player.pos);
+      const touching = distance < (f.r + this.player.r);
+
+      if (!touching) continue;
+
+      const now = millis();
+      if (
+        now - this.player.lasttagtime < this.tagCooldown ||
+        now - f.lasttagtime < this.tagCooldown
+      ) {
+        continue;
+      }
+
+      if (f.isIt && !this.player.isIt) {
+        f.isIt = false;
+        f.jumpBack();
+        this.player.isIt = true;
+        f.lasttagtime = now;
+        this.player.lasttagtime = now;
+        break;
+      }
+
+      if (this.player.isIt && !f.isIt) {
+        this.player.isIt = false;
+        f.jumpBack();
+        f.isIt = true;
+        f.lasttagtime = now;
+        this.player.lasttagtime = now;
+        break;
+      }
+    }
   }
 }
 

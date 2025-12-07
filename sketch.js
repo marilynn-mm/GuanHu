@@ -1,5 +1,6 @@
 let activeFriends = []; // array of friend IDs
-let tabs = []
+let openTabs = [];
+
 
 // set up canva
 function setup() {
@@ -20,7 +21,8 @@ function draw() {
   drawMap();
   drawTabs();
   test_draw_clickables();
-  drawActiveFriendsBar()
+  drawActiveFriendsBar();
+  // openTagGame();
   
   
 }
@@ -35,6 +37,17 @@ function drawMap(){
 }
 
 
+function drawText(msg) {
+  textFont(pixelFont);
+  textSize(14);
+
+  fill(0);
+  textAlign(RIGHT, TOP);
+
+  const margin = 20;
+  text(msg, width - margin, margin);
+}
+
 // all the markers of interactions
 function drawTabs() {
   for (let tab of openTabs) {
@@ -45,6 +58,18 @@ function drawTabs() {
 
   if (toomanyviewtabs) {
     drawText("Too many view tabs open!")
+  } else if (activeFriends.length === 0) {
+    drawText("Ring a friend!");
+    // console.log("nofriends")
+    return;
+  } else if (activeFriends.length === 1) {
+    drawText("Ring more friends!");
+    // console.log("nofriends")
+    return;
+  } else if (activeFriends.length === 5) {
+    drawText("Tag time!");
+    // console.log("nofriends")
+    return;
   }
 }
 
@@ -103,9 +128,10 @@ function clickable() {
   //   return;
   // }
 
-  // if (click === "tag") {
-  //   return;
-  // }
+  if (click === "tag") {
+    openTagGame();
+    return;
+  }
 }
 
 
@@ -150,6 +176,13 @@ function getFriendById(friendId) {
   return null;
 }
 
+function getTagSpriteFor(friendId) {
+  // const img = friends_images[friendId];
+  const friend = FRIENDS(friendId);
+  const sprite = friend.tagSprite;
+  return sprite;
+}
+
 function drawActiveFriendsBar() {
   if (!activeFriends || activeFriends.length === 0) return;
 
@@ -171,22 +204,26 @@ function drawActiveFriendsBar() {
   const x = width - barWidth - margin;
   const y = height - barHeight - margin;
 
-  // --- background panel ---
+  // background panel
   noStroke();
   fill(0, 0, 0, 200);
   rect(x, y, barWidth, barHeight, 4);
 
-  // --- label text ---
+  // label text
   fill(255);
   const labelX = x + 8;
   const labelY = y + 6;
   text(label, labelX, labelY);
 
-  // --- friend icons ---
+  // friend icons
   let iconX = labelX + labelWidth + 8;
   const iconY = y + 18;
 
   for (let friendId of activeFriends) {
+    // getTagSpriteFor(friendID);
+    console.log(friendId);
+    console.log(friends_images[friendId]);
+
     const friend = getFriendById(friendId);
     if (!friend) continue;
 
