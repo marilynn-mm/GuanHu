@@ -140,7 +140,7 @@ class TagFriend extends Character {
 
     if (this.spriteImg) {
     imageMode(CENTER);
-    image(this.spriteImg, this.pos.x, this.pos.y, size, size);
+    // image(this.spriteImg, this.pos.x, this.pos.y, size, size);
     imageMode(CORNER);
     }
   }

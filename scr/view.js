@@ -167,23 +167,18 @@ class RingbellTab extends BaseTab {
     // overlay text on titlebar
     const bar = this.getTitleBarRect();
 
-    fill(255);          // white text pops better on gray
+    fill(255);
     textFont(pixelFont);
     textSize(10);
-    textAlign(LEFT, CENTER);   // or CENTER if you prefer centered
+    textAlign(LEFT, CENTER);
     noStroke();
 
     text(
       this.text,
-      bar.x + 30,          // small padding from left
-      bar.y + bar.h / 2   // vertically centered
+      bar.x + 30,
+      bar.y + bar.h / 2 
     );
 
-
-    // bottom-right Press to ring block
-    // fill(0);
-    // rect(this.buttonArea.x, this.buttonArea.y,
-    //      this.buttonArea.w, this.buttonArea.h);
 
     fill(255);
     textSize(12);
@@ -246,25 +241,7 @@ class TagGameTab extends BaseTab {
 
     this.friends = [];
 
-    // for (let friendId of activeFriendIds) {
-    //   const spriteImg = getTagSpriteFor(friendId);
-    //   console.log(spriteImg);
 
-    //   const spawnX = random(40, this.gameW - 40);
-    //   const spawnY = random(40, this.gameH - 40);
-
-    //   this.friends.push(
-    //     new TagFriend(
-    //       spawnX,
-    //       spawnY,
-    //       14,
-    //       2.3,
-    //       this.gameW,
-    //       this.gameH,
-    //       friendId,
-    //       spriteImg
-    //     )
-    //   );
     for (let friendId of activeFriends) {
       const friendData = getFriendById(friendId);
       if (!friendData) {
@@ -289,8 +266,6 @@ class TagGameTab extends BaseTab {
         )
       );
     }
-
-    
   }
 
   draw() {
@@ -324,9 +299,23 @@ class TagGameTab extends BaseTab {
     this.checkTag();
 
     pop();
-  }
 
-  
+    
+    // overlay text on titlebar
+    const bar = this.getTitleBarRect();
+
+    fill(255);
+    textFont(pixelFont);
+    textSize(10);
+    textAlign(LEFT, CENTER);
+    noStroke();
+
+    text(
+      "Tag! Game start!",
+      bar.x + 30,          // small padding from left
+      bar.y + bar.h / 2   // vertically centered
+    );
+  }
 
   checkTag() {
     for (let f of this.friends) {
@@ -364,197 +353,4 @@ class TagGameTab extends BaseTab {
   }
 }
 
-
-// class RingbellTab extends BaseTab {
-//   constructor(x, y, img) {
-//     super({x, y, w: img.width, h: img.height}, "ringbell", friend);
-    
-//     this.img = img;
-//     // this.friend = friend;
-
-//     this.state = "idle"; 
-//     this.text = `Home of ${friend.name}`;
-
-//     // Click areas relative to tab position  
-//     this.displayArea = { 
-//       x: this.x + 240, 
-//       y: this.y + 40, 
-//       w: 220, 
-//       h: 80 
-//     };
-
-//     this.buttonArea = {
-//       x: this.x + 240, 
-//       y: this.y + 180, 
-//       w: 220, 
-//       h: 100
-//     };
-//   }
-
-//   draw() {
-//     this.drawFrame();
-
-//     // draw the main ringbell PNG
-//     image(this.img, this.x, this.y);
-
-//     // draw dynamic text on upper right screen
-//     fill(255);
-//     textSize(14);
-//     textAlign(CENTER, CENTER);
-//     text(this.text,
-//          this.displayArea.x + this.displayArea.w/2,
-//          this.displayArea.y + this.displayArea.h/2,
-//          this.displayArea.w,
-//          this.displayArea.h);
-
-//     // draw the button highlight
-//     fill(255, 255, 255, 40);
-//     rect(this.buttonArea.x, this.buttonArea.y, 
-//          this.buttonArea.w, this.buttonArea.h);
-    
-//     fill(255);
-//     textSize(16);
-//     text("Press to Ring",
-//          this.buttonArea.x + this.buttonArea.w/2,
-//          this.buttonArea.y + this.buttonArea.h/2);
-//   }
-
-//   handleClick(mx, my) {
-//     // If click inside the "press to ring" area
-//     if (mx > this.buttonArea.x && mx < this.buttonArea.x + this.buttonArea.w &&
-//         my > this.buttonArea.y && my < this.buttonArea.y + this.buttonArea.h) {
-      
-//       this.startRinging();
-//     }
-//   }
-
-//   startRinging() {
-//     if (this.state !== "idle") return;
-//     this.state = "ringing";
-//     this.text = "Ringing...";
-
-//     // After delay, friend responds
-//     setTimeout(() => {
-//       this.respond();
-//     }, 1500);
-//   }
-
-//   respond() {
-//     this.state = "responding";
-//     this.text = this.friend.response;
-//   }
-// }
-
-
-// class RingbellTab extends BaseTab {
-//   constructor(slot, id) {
-//     super(slot, "ringbell", id);
-//   }
-//   draw() {
-//     this.drawFrame();
-//     fill(0);
-//     textAlign(CENTER, CENTER);
-//     text("Ringbell: " + this.id, this.x + this.w/2, this.y + this.h/2);
-//   }
-// }
-
-
-// class GameTab extends BaseTab {
-//   constructor(slot, id) {
-//     super(slot, "game", id);
-//     this.t = 0; // placeholder game logic
-//   }
-
-//   update() {
-//     this.t += 0.03;
-//   }
-
-//   draw() {
-//     this.drawFrame();
-//     fill(240);
-//     textAlign(LEFT, TOP);
-//     text("Game: " + this.id, this.x + 10, this.y + 10);
-//     text("t = " + this.t.toFixed(2), this.x + 10, this.y + 40);
-//   }
-// }
-
-// class BikeRaceTab extends BaseTab {
-//   constructor() {
-//     super();
-//     this.playerX = 100;
-//     this.playerY = 300;
-//   }
-
-//   enter() {
-//     // reset or prepare mini-game state
-//   }
-
-//   update() {
-//     // game logic, e.g. move player with keyboard
-//     if (keyIsDown(LEFT_ARROW))  this.playerX -= 3;
-//     if (keyIsDown(RIGHT_ARROW)) this.playerX += 3;
-//   }
-
-//   draw() {
-//     background(10, 10, 30);
-//     // draw the road, trees, whatever
-//     rect(this.playerX, this.playerY, 30, 15); // simple bike
-//     // maybe a small “Back” button
-//     rect(20, 20, 60, 30);
-//     fill(255);
-//     text("Back", 25, 40);
-//   }
-
-//   mousePressed() {
-//     // click back: return to map
-//     if (mouseX > 20 && mouseX < 80 && mouseY > 20 && mouseY < 50) {
-//       currentTab.exit?.();
-//       currentTab = tabs["map"];
-//       currentTab.enter?.();
-//     }
-//   }
-// }
-
-
-
-
-
-// function openGame(id) {
-//   // close old game
-//   openTabs = openTabs.filter(t => t.type !== "game");
-//   openTabs.push(new GameTab(GAME_SLOT, id));
-// }
-
-
-// function closeTab(tab) {
-//   openTabs = openTabs.filter(t => t !== tab);
-// }
-
-
-// // integrate with the other mousePressedLogic
-// function mousePressed() {
-
-//   // Check right-side windows first
-//   for (let tab of openTabs) {
-//     if (tab.wasCloseClicked(mouseX, mouseY)) {
-//       closeTab(tab);
-//       return;
-//     }
-//   }
-
-//   // Otherwise check left-map hotspot logic (demo)
-//   if (mouseX < 400) {
-//     // Example triggers:
-//     if (mouseY < 150) {
-//       openGame("cycling");
-//     } else if (mouseY < 300) {
-//       openRingbell("find-conor");
-//     } else {
-//       // open random viewpoints
-//       openViewpoint("vp1", random([img1, img2]));
-//     }
-//   }
-
-  
-// }
 
