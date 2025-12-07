@@ -201,7 +201,6 @@ class RingbellTab extends BaseTab {
     this.state = "ringing";
     this.text = this.friend.lines.ringing;
 
-    // after a short delay, friend responds + joins activeFriends
     setTimeout(() => {
       this.state = "responded";
       this.text = this.friend.lines.response;
@@ -440,5 +439,71 @@ class DuckGameTab extends BaseTab {
 }
 
 
+class BikeGameTab extends BaseTab {
+  constructor(x, y, w, h) {
+    super(x, y, w, h);
+    this.type = "game_bike";
 
+    // initial bike position inside content rect
+    this.bikeX = 20;
+    this.bikeY = 140;
+
+    this.bikeSpeed = 12;   // how much to move per click
+
+    // button dimensions
+    this.button = { x: 10, y: 10, w: 60, h: 22 };
+  }
+
+  draw() {
+    this.drawFrame();
+
+    const content = this.getContentRect();
+    push();
+    translate(content.x, content.y);
+
+
+    image(bikeBGImg, 0, 0, content.w, content.h);
+
+
+
+    image(bikeSpirteImg, this.bikeX, this.bikeY, 60, 60);
+
+    // pedal button
+    noStroke();
+    fill(0, 0, 0, 160);
+    rect(this.button.x, this.button.y, this.button.w, this.button.h, 4);
+
+    fill(255);
+    textFont(pixelFont);
+    textSize(10);
+    textAlign(CENTER, CENTER);
+    text("pedal", this.button.x + this.button.w/2, this.button.y + this.button.h/2);
+
+    pop();
+  }
+
+  handleClick(mx, my) {
+    const content = this.getContentRect();
+
+    // convert button rect to absolute coordinates
+    const btn = {
+      x: content.x + this.button.x,
+      y: content.y + this.button.y,
+      w: this.button.w,
+      h: this.button.h
+    };
+
+    if (
+      mx >= btn.x &&
+      mx <= btn.x + btn.w &&
+      my >= btn.y &&
+      my <= btn.y + btn.h
+    ) {
+      this.bikeX += this.bikeSpeed;   // move right
+      return true;  // handled
+    }
+
+    return false;
+  }
+}
 

@@ -20,10 +20,8 @@ function setup() {
 function draw() {
   drawMap();
   drawTabs();
-  test_draw_clickables();
-  drawActiveFriendsBar();
-  // openTagGame();
-  
+  // test_draw_clickables();
+  drawActiveFriendsBar();  
   
 }
 
@@ -89,9 +87,8 @@ function mousePressed() {
       return;
     }
     
-    if (tab.type === "ringbell" || tab.type === "game_duck" ) {
+    if (tab.type === "ringbell" || tab.type === "game_duck" || tab.type === "game_bike" ) {
       tab.handleClick(mouseX, mouseY);
-      // if you want tabs to "eat" the click, you can `return;` here
     }
 
   }
@@ -124,9 +121,10 @@ function clickable() {
     return;
   }
   
-  // If (click === "bike") {
-  //   return;
-  // }
+  if (click === "bike") {
+    openBikeGame();
+    return;
+  }
 
   if (click === "tag") {
     openTagGame();

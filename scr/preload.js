@@ -36,7 +36,7 @@ let mapclickables = [
   ["ringbell5", 0.44, 0.76],
 
   ["duck", 0.56, 0.65],
-  // ["bike", 0.33, 0.36],
+  ["bike", 0.33, 0.36],
   ["tag",  0.74, 0.81]
 ];
 
@@ -72,8 +72,9 @@ function preload() {
   tagImg = loadImage("images/backdropTag.JPG");
   duckBGImg = loadImage("images/backdropDuck.PNG");
   bikeBGImg = loadImage("images/backdropBike.PNG");
-  bikeImg = loadImage("images/bike.PNG");
+  bikeSpirteImg = loadImage("images/bike.PNG");
 
+  console.log(bikeBGImg)
   // Load viewpoints images
   for (let item of mapclickables) {
     let id = item[0];

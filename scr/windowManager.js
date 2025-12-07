@@ -156,3 +156,13 @@ function openDuckGame() {
   openTabs.push(new DuckGameTab(slotX, slotY, w, h));
 }
 
+function openBikeGame() {
+  // only one game tab at a time
+  openTabs = openTabs.filter(t => !t.type || !t.type.startsWith("game_"));
+
+  const x = mapWidth + 40;
+  const y = 60;
+  const w = 360;
+  const h = 260;
+  openTabs.push(new BikeGameTab(x, y, w, h));
+}
