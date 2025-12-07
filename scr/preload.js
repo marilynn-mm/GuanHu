@@ -35,7 +35,7 @@ let mapclickables = [
   ["ringbell4", 0.76, 0.44],
   ["ringbell5", 0.44, 0.76],
 
-  // ["duck", 0.56, 0.65],
+  ["duck", 0.56, 0.65],
   // ["bike", 0.33, 0.36],
   ["tag",  0.74, 0.81]
 ];
@@ -70,6 +70,9 @@ function preload() {
   ringbellBaseImg = loadImage("images/backdropRingbell.png");
   selfImg = loadImage("images/self.PNG");
   tagImg = loadImage("images/backdropTag.JPG");
+  duckBGImg = loadImage("images/backdropDuck.PNG");
+  bikeBGImg = loadImage("images/backdropBike.PNG");
+  bikeImg = loadImage("images/bike.PNG");
 
   // Load viewpoints images
   for (let item of mapclickables) {

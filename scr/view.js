@@ -123,7 +123,6 @@ class ViewpointTab extends BaseTab {
 
   draw() {
     this.drawFrame();
-    console.log("content", content);
     const content = this.getContentRect();
     image(this.img, content.x, content.y, this.imgW, this.imgH);
   }
@@ -311,7 +310,7 @@ class TagGameTab extends BaseTab {
     noStroke();
 
     text(
-      "Tag! Game start!",
+      "Tag! Game start! (use your arrows)",
       bar.x + 30,          // small padding from left
       bar.y + bar.h / 2   // vertically centered
     );
@@ -352,5 +351,94 @@ class TagGameTab extends BaseTab {
     }
   }
 }
+
+
+
+
+class DuckGameTab extends BaseTab {
+  constructor(x, y, w, h) {
+    super(x, y, w, h);
+    this.type = "game_duck";
+
+    const content = this.getContentRect();
+    const cw = content.w;
+    const ch = content.h;
+
+    // bowl is a rectangle on the left side near the bottom
+    this.bowlLocal = {
+      x: 10,
+      y: ch - 20,
+      w: 80,
+      h: 30
+    };
+
+    this.showQuack = false;
+  }
+
+  draw() {
+    this.drawFrame();
+    const content = this.getContentRect();
+
+    push();
+    translate(content.x, content.y);
+
+    image(duckBGImg, 0, 0, content.w, content.h);
+
+    if (this.showQuack) {
+
+      fill(0);
+      textFont(pixelFont);
+      textSize(10);
+      textAlign(CENTER, CENTER);
+      text("quack", this.bowlLocal.x + 30, this.bowlLocal.y - 30) // bubbleX + textW / 2, bubbleY + textH / 2);
+    }
+
+    pop();
+
+    // overlay text on titlebar
+    const bar = this.getTitleBarRect();
+
+    fill(255);
+    textFont(pixelFont);
+    textSize(10);
+    textAlign(LEFT, CENTER);
+    noStroke();
+
+    text(
+      "Click duck for quack)",
+      bar.x + 30,          // small padding from left
+      bar.y + bar.h / 2   // vertically centered
+    );
+
+  }
+
+  handleClick(mx, my) {
+    console.log("checking duck clicks")
+    const content = this.getContentRect();
+
+    // bowl rect in absolute canvas coords
+    const bowlAbs = {
+      x: content.x + this.bowlLocal.x,
+      y: content.y + this.bowlLocal.y,
+      w: this.bowlLocal.w,
+      h: this.bowlLocal.h
+    };
+
+    if (
+      mx >= bowlAbs.x &&
+      mx <= bowlAbs.x + bowlAbs.w &&
+      my >= bowlAbs.y &&
+      my <= bowlAbs.y + bowlAbs.h
+    ) {
+      this.showQuack = true;
+      return true;
+    }
+
+    return false;
+  }
+  
+}
+
+
 
 

@@ -145,3 +145,14 @@ function openTagGame() {
 }
 
 
+function openDuckGame() {
+  // only one game tab at a time if you want:
+
+  const slotX = mapWidth + 40;
+  const slotY = 60;
+  const w = 360;
+  const h = 360 * duckBGImg.height/duckBGImg.width;
+
+  openTabs.push(new DuckGameTab(slotX, slotY, w, h));
+}
+

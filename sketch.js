@@ -89,7 +89,7 @@ function mousePressed() {
       return;
     }
     
-    if (tab.type === "ringbell") {
+    if (tab.type === "ringbell" || tab.type === "game_duck" ) {
       tab.handleClick(mouseX, mouseY);
       // if you want tabs to "eat" the click, you can `return;` here
     }
@@ -119,10 +119,10 @@ function clickable() {
     return;
   }
 
-  // if (click === "duck") {
-
-  //   return;
-  // }
+  if (click === "duck") {
+    openDuckGame();
+    return;
+  }
   
   // If (click === "bike") {
   //   return;
