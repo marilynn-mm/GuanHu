@@ -80,6 +80,7 @@ function mousePressed() {
 
     // removing taps 
     if (tab.wasCloseClicked(mouseX, mouseY)) {
+      clickSoundPlay();
       // console.log("removing tab")
       openTabs.splice(i, 1);  // remove that tab
       drawMap();
@@ -132,7 +133,11 @@ function clickable() {
   }
 }
 
-
+function clickSoundPlay(){
+  if (!clickSound.isPlaying()) {
+    clickSound.play();
+  }
+}
 function findClickablesUnderMouse() {
   for (let i = 0; i < mapclickables.length; i++) {
     const [id, xratio, yratio] = mapclickables[i];
@@ -141,10 +146,12 @@ function findClickablesUnderMouse() {
     const x_range = mouseX - x;
     const y_range = mouseY - y;
     if (x_range * x_range + y_range * y_range <= clickRadius * clickRadius) {
+      clickSoundPlay();
       console.log("clicked ", id)
       return id;
     }
   }
+
   // console.log("no click ", id)
   return null;
 }
@@ -218,9 +225,6 @@ function drawActiveFriendsBar() {
   const iconY = y + 18;
 
   for (let friendId of activeFriends) {
-    // getTagSpriteFor(friendID);
-    console.log(friendId);
-    console.log(friends_images[friendId]);
 
     const friend = getFriendById(friendId);
     if (!friend) continue;

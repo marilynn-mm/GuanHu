@@ -6,18 +6,51 @@ canvas {
   display: block;
 }
 
-#banner {
-  background: #333;
-  color: white;
-  padding: 5px;
-  font-size: 10px;
+
+#topbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  background-color: #767443;
+  padding: 10px 10px;
+
+  font-family: 'pixelFont', monospace;
+  text-transform: uppercase;
+  font-size: 20px;
 }
 
-a.button {
-    padding: 1px 6px;
-    border: 1px outset buttonborder;
-    border-radius: 3px;
-    color: buttontext;
-    background-color: buttonface;
-    text-decoration: none;
+.titleGroup {
+  display: flex;
+  flex-direction: column;
 }
+
+#titleMain {
+  font-size: 20px;
+  text-transform: uppercase;
+  font-family: 'pixelFont', monospace;
+  font-weight: bold;
+  color: #000;
+}
+
+#titleTagline {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-top: 2px;
+}
+
+
+.right-controls button {
+  font-family: 'pixelFont', monospace;
+  text-transform: uppercase;
+  font-size: 11px;
+
+  margin-right: 10px;
+  padding: 6px 10px;
+
+  background: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+

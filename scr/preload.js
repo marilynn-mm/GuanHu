@@ -87,16 +87,17 @@ function preload() {
   // Load ringbell 
   ringbell = loadImage("images/backdropRingbell.png");
     
-  console.log("before loading")
   // Load friends images
   for (let id of FRIEND_IMAGE_IDS) {
     friends_images[id] = loadImage(`images/${id}.PNG`);
-    console.log("loaded...")
   }
 
-  console.log("loaded all", friends_images)
-  // Load font 
+
+  // Load font, audio
   pixelFont = loadFont("libraries/04B_03__.TTF");
+  ringSound = loadSound('libraries/ring.mp3');
+  clickSound = loadSound('libraries/click.mp3');
+//   console.log("ring", ringSound)
 }
 
 

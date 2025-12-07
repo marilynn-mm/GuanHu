@@ -198,9 +198,13 @@ class RingbellTab extends BaseTab {
   onRing() {
     if (this.state !== "idle") return;
 
+    
     this.state = "ringing";
     this.text = this.friend.lines.ringing;
 
+    if (!ringSound.isPlaying()) {
+      ringSound.play();
+    }
     setTimeout(() => {
       this.state = "responded";
       this.text = this.friend.lines.response;
@@ -412,7 +416,7 @@ class DuckGameTab extends BaseTab {
   }
 
   handleClick(mx, my) {
-    console.log("checking duck clicks")
+    // console.log("checking duck clicks")
     const content = this.getContentRect();
 
     // bowl rect in absolute canvas coords
